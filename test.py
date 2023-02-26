@@ -1,4 +1,3 @@
-async def a():
-    print(1)
-
-await a()
+playlist = []
+for p in playlist:
+    print(p)
