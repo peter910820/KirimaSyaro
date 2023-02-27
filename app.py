@@ -1,7 +1,9 @@
 import discord
 import os, re
-from pytube import YouTube, exceptions
+from pytube import YouTube, exceptions, Playlist
 
+from src.youtube_music_V1.youtube_music_playlist import youtube_playlist, show_playlist
+from src.youtube_music_V1.youtube_music_operate import pause_music, resume_music
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -44,22 +46,33 @@ async def on_message(message):
 !pause : 暫停音樂\n
 !resume : 恢復音樂
 ```
-暫時不支援撥放清單，然後桐個網址絕對不要添加兩次，絕對會出事。\n打完指令後等他一秒在打下一個指令，不然我也不知道會怎樣('''
+暫時不支援撥放清單，然後同個網址絕對不要添加兩次，絕對會出事。\n打完指令後等他一秒在打下一個指令，不然我也不知道會怎樣('''
             await message.channel.send(menu)
 
-        elif re.match(r"^play .+$", message.content[1:],re.IGNORECASE):
+        elif re.match(r"^play_playlist .+$", message.content[1:]):
+            yt_playlist = Playlist(message.content[6:])
             try:
-                yt = YouTube(message.content[6:])
-                yt.streams.filter().get_audio_only().download(filename=f'{yt.title}.mp3')
-                play(yt.title)
-            except exceptions.RegexMatchError:
-                await message.channel.send('網址怪怪的呦')
+                print(yt_playlist.owner)
             except:
-                title = yt.title
-                for f in forbidden_char:
-                    title = title.replace(f,' ')
-                yt.streams.filter().get_audio_only().download(filename=f'{title}.mp3')
-                play(title)
+                await message.channel.send('網址怪怪的呦')
+            youtube_playlist(yt_playlist, client)
+
+        elif re.match(r"^play .+$", message.content[1:]):
+            youtube_playlist(message.content[6:], client)
+
+        # elif re.match(r"^play .+$", message.content[1:]):
+        #     try:
+        #         yt = YouTube(message.content[6:])
+        #         yt.streams.filter().get_audio_only().download(filename=f'{yt.title}.mp3')
+        #         play(yt.title)
+        #     except exceptions.RegexMatchError:
+        #         await message.channel.send('網址怪怪的呦')
+        #     except:
+        #         title = yt.title
+        #         for f in forbidden_char:
+        #             title = title.replace(f,' ')
+        #         yt.streams.filter().get_audio_only().download(filename=f'{title}.mp3')
+        #         play(title)
 
         elif message.content[1:] == 'playlist':
             tmp_str = '```\n'
@@ -70,20 +83,13 @@ async def on_message(message):
                     tmp_str = tmp_str + str(p) + '\n'
                 tmp_str = tmp_str + '```'
                 await message.channel.send(tmp_str)
-        
-
+        elif message.content[1:] == 'test_playlist':
+            await show_playlist(message, client)
         elif message.content[1:] == 'pause':
-            if client.voice_clients[0].is_playing():
-                client.voice_clients[0].pause()
-                await message.channel.send('歌曲已暫停')
-            else:
-                await message.channel.send('沒有歌曲正在撥放呦')
+            await pause_music(message, client)
         elif message.content[1:] == 'resume':
-            if client.voice_clients[0].is_paused():
-                client.voice_clients[0].resume()
-                await message.channel.send('歌曲已繼續撥放')
-            else:
-                await message.channel.send('沒有歌曲正在暫停呦')
+            await resume_music(message, client)
+        
 
         ##########################################################
 
@@ -108,8 +114,8 @@ async def join(message):
     elif client.voice_clients == []:
         voiceChannel = message.author.voice.channel
         await voiceChannel.connect()
-        song = discord.Activity(type=discord.ActivityType.listening, name = 'Yotube的音樂')
-        await client.change_presence(activity=song, status=discord.Status.online)
+        music = discord.Activity(type=discord.ActivityType.listening, name = 'Yotube的音樂')
+        await client.change_presence(activity=music, status=discord.Status.online)
     else:
         await message.channel.send("我已經在語音頻道了呦")
 
