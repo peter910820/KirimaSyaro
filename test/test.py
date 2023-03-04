@@ -1,9 +1,7 @@
 import discord
 import os, re
-from pytube import YouTube,Playlist
+from pytube import YouTube, Playlist
 
-playlistUrl,pl = [],[]
-playlist = Playlist('https://www.youtube.com/watch?v=0Fk7ca1eSvc&list=PLegMSu_HyPZtoWPuoaObMF6iwRSkbBgeA&index=3')
-
-if type(playlist) == "pytube.contrib.playlist.Playlist":
-    print(type(playlist))
+yt = YouTube('https://music.youtube.com/watch?v=M2cckDmNLMI&list=RDCLAK5uy_mRcc2Y3l-RoZsDt27qu8CBGpKt-5w7v8g')
+print('download...')
+yt.streams.filter().get_audio_only().download(filename='b.mp3')

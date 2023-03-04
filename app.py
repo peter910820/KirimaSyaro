@@ -2,9 +2,8 @@ import discord
 import os, re
 from pytube import YouTube, exceptions, Playlist
 
-from src.youtube_music_V1.youtube_music_playlist import youtube_playlist, show_playlist
-from src.youtube_music_V1.youtube_music_operate import pause_music, resume_music
-
+from src.youtube_music_V1.youtube_music_playlist import *
+from src.youtube_music_V1.youtube_music_operate import *
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
@@ -30,10 +29,8 @@ async def on_message(message):
             # print(message.content)
             await message.channel.send(f'延遲時間為:{str(client.latency)}')
         elif message.content[1:] == 'join':
-            print(type(message.author.voice))
             await join(message)
         elif message.content[1:] == 'leave':
-            print(type(message.author.voice))
             await leave(message)
         elif message.content[1:] == 'menu':
             menu = '''
@@ -41,12 +38,12 @@ async def on_message(message):
 ```\n
 !join : 讓機器人到發話者的語音頻道\n
 !leave : 讓機器人退出語音頻道\n
-!play YouTube影片網址 : 增加歌曲到撥放清單並撥放\n
-!playlist : 查詢當前撥放清單\n
+!play YouTube影片網址 : 增加歌曲到播放清單並播放\n
+!playlist : 查詢當前播放清單\n
 !pause : 暫停音樂\n
 !resume : 恢復音樂
 ```
-暫時不支援撥放清單，然後同個網址絕對不要添加兩次，絕對會出事。\n打完指令後等他一秒在打下一個指令，不然我也不知道會怎樣('''
+暫時不支援播放清單，然後同個網址絕對不要添加兩次，絕對會出事。\n打完指令後等他一秒在打下一個指令，不然我也不知道會怎樣('''
             await message.channel.send(menu)
 
         elif re.match(r"^play_playlist .+$", message.content[1:]):
@@ -55,29 +52,15 @@ async def on_message(message):
                 print(yt_playlist.owner)
             except:
                 await message.channel.send('網址怪怪的呦')
-            youtube_playlist(yt_playlist, client)
+            youtube_playlist(yt_playlist, message, client)
 
         elif re.match(r"^play .+$", message.content[1:]):
-            youtube_playlist(message.content[6:], client)
-
-        # elif re.match(r"^play .+$", message.content[1:]):
-        #     try:
-        #         yt = YouTube(message.content[6:])
-        #         yt.streams.filter().get_audio_only().download(filename=f'{yt.title}.mp3')
-        #         play(yt.title)
-        #     except exceptions.RegexMatchError:
-        #         await message.channel.send('網址怪怪的呦')
-        #     except:
-        #         title = yt.title
-        #         for f in forbidden_char:
-        #             title = title.replace(f,' ')
-        #         yt.streams.filter().get_audio_only().download(filename=f'{title}.mp3')
-        #         play(title)
+            youtube_playlist(message.content[6:], message, client,)
 
         elif message.content[1:] == 'playlist':
             tmp_str = '```\n'
             if len(playlist) == 0:
-                await message.channel.send('撥放清單目前為空呦')
+                await message.channel.send('播放清單目前為空呦')
             else:
                 for p in playlist:
                     tmp_str = tmp_str + str(p) + '\n'
@@ -85,10 +68,18 @@ async def on_message(message):
                 await message.channel.send(tmp_str)
         elif message.content[1:] == 'test_playlist':
             await show_playlist(message, client)
+        elif message.content[1:] == 'now':
+            await show_crrent_song(message, client)
         elif message.content[1:] == 'pause':
             await pause_music(message, client)
         elif message.content[1:] == 'resume':
             await resume_music(message, client)
+        elif message.content[1:] == 'skip':
+            await stop_music(message, client)
+
+
+        elif message.content[1:] == 'close':
+            await close()
         
 
         ##########################################################
@@ -96,7 +87,7 @@ async def on_message(message):
         elif re.match(r"^administrator_permissions_01 .+$", message.content[1:],re.IGNORECASE):
             try:
                 yt = YouTube(message.content[30:])
-                yt.streams.filter().get_audio_only().download(filename=f'{yt.title}.mp3')
+                yt.streams.filter().get_lowest_resolution().download(filename=f'{yt.title}.mp3')
                 cycle_play(yt.title)
             except exceptions.RegexMatchError:
                 await message.channel.send('網址怪怪的呦')
@@ -104,7 +95,7 @@ async def on_message(message):
                 title = yt.title
                 for f in forbidden_char:
                     title = title.replace(f,' ')
-                yt.streams.filter().get_audio_only().download(filename=f'{title}.mp3')
+                yt.streams.filter().get_lowest_resolution().download(filename=f'{title}.mp3')
                 cycle_play(title)
 
 @client.event
@@ -143,6 +134,8 @@ def play(title):
     else:
         return
     
+async def close():
+    await client.close()
 ##########################################################    
 
 def cycle_play(title):
