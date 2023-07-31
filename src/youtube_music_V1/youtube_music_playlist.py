@@ -14,7 +14,7 @@ def youtube_playlist(yt_playlist, message, client):  # def msg = the playlist UR
             original_title.pop()
             playlistUrl.pop(0)
             try:
-                for file in os.scandir('S:/Myproject/syaroBot/music_tmp/'):
+                for file in os.scandir('O:/Myproject/syaroBot/music_tmp/'):
                     os.remove(file.path)
             except:
                 print('OS錯誤')
@@ -35,12 +35,12 @@ def youtube_playlist(yt_playlist, message, client):  # def msg = the playlist UR
         original_title.append(music.title)
         title = music.title
         try:
-            music.streams.filter().get_lowest_resolution().download(filename=f'S:/Myproject/syaroBot/music_tmp/{title}.mp3')
+            music.streams.filter().get_lowest_resolution().download(filename=f'O:/Myproject/syaroBot//music_tmp/{title}.mp3')
         except:
             for f in forbidden_char:
                 title = title.replace(f,' ')
-            music.streams.filter().get_lowest_resolution().download(filename=f'S:/Myproject/syaroBot/music_tmp/{title}.mp3')
-        client.voice_clients[0].play(discord.FFmpegOpusAudio(executable='C:/ffmpeg/bin/ffmpeg.exe', source=f'S:/Myproject/syaroBot/music_tmp/{title}.mp3'), after = lambda _ : youtube_playlist(1, message, client))
+            music.streams.filter().get_lowest_resolution().download(filename=f'O:/Myproject/syaroBot/music_tmp/{title}.mp3')
+        client.voice_clients[0].play(discord.FFmpegOpusAudio(executable='C:/ffmpeg/bin/ffmpeg.exe', source=f'O:/Myproject/syaroBot/music_tmp/{title}.mp3'), after = lambda _ : youtube_playlist(1, message, client))
     else:
         return
     

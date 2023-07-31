@@ -119,7 +119,6 @@ async def leave(message):
         game = discord.Game("Visual Studio Code")
         await client.change_presence(activity=game, status=discord.Status.online)
 
-
 def play(title):
     print(title)
     if title in playlist:
