@@ -12,7 +12,8 @@ class YoutubePlay(commands.Cog):
         self.ffmpeg_path = 'C:/ffmpeg/bin/ffmpeg.exe'
         self.song_path = 'O:/Myproject/syaroBot/music_tmp/'
 
-        self.playlist_prefix = "https://youtube.com/playlist?list="
+        self.play_prefix = "https://www.youtube.com/"
+        self.playlist_prefix = ["https://www.youtube.com/", "https://youtube.com/playlist?list="]
 
     @commands.command()
     async def menu(self, ctx):
@@ -52,6 +53,8 @@ class YoutubePlay(commands.Cog):
             await self.bot.voice_clients[0].disconnect()
             game = discord.Game("ブルーアーカイブ -Blue Archive-") # status
             await self.bot.change_presence(status=discord.Status.online, activity=game)
+            self.play_queue = []
+
 
     @commands.command()
     async def now(self, ctx):
@@ -71,7 +74,6 @@ class YoutubePlay(commands.Cog):
                     for _ in range(0, count):
                         self.play_queue.pop(0)
                 await ctx.send('歌曲已跳過')
-                self.after_song(self)
             else:
                 await ctx.send('沒有歌曲正在播放呦')
         else:
@@ -83,12 +85,55 @@ class YoutubePlay(commands.Cog):
             await ctx.send('播放清單目前為空呦')
         else:
             print(self.play_queue)
-            tmp_str = f'```\n播放清單剩餘歌曲: {len(self.play_queue)}首\n'
+            tmp_str = f"```\n播放清單剩餘歌曲: {len(self.play_queue)}首\n```"
             await ctx.send(tmp_str)
 
     @commands.command()
+    async def play(self, ctx, url):
+        if url.startswith(self.play_prefix):
+            if ctx.author.voice == None:
+                await ctx.send('使用者還沒進入語音頻道呦')
+            elif self.bot.voice_clients == []:
+                voiceChannel = ctx.author.voice.channel
+                await voiceChannel.connect()
+                music = discord.Activity(type=discord.ActivityType.listening, name = 'Yotube的音樂')
+                await self.bot.change_presence(activity=music, status=discord.Status.online)
+
+                for file in os.scandir(self.song_path): #刪除之前的mp3檔案
+                    if file.path[-4:] == '.mp3':
+                        os.remove(file.path)
+                if not self.bot.voice_clients[0].is_playing():
+                    try:
+                        music = YouTube(url)
+                        self.play_queue.append(url)
+                        print(self.play_queue)
+                        title = music.title
+                        self.song_title = title
+                        music.streams.filter().get_lowest_resolution().download(filename=f"{self.song_path}/{title}.mp3")
+                        self.bot.voice_clients[0].play(discord.FFmpegOpusAudio(executable=self.ffmpeg_path, source=f"{self.song_path}/{title}.mp3"), after = lambda _ : self.after_song(self))
+                    except OSError as err:
+                        for f in self.forbidden_char:
+                            title = title.replace(f," ")
+                        music.streams.filter().get_lowest_resolution().download(filename=f"{self.song_path}/{title}.mp3")
+                        self.bot.voice_clients[0].play(discord.FFmpegOpusAudio(executable=self.ffmpeg_path, source=f"{self.song_path}/{title}.mp3"), after = lambda _ : self.after_song(self))
+                    except:
+                        await ctx.send("找不到歌曲!")
+                    
+            else:
+                if not self.bot.voice_clients[0].is_playing():
+                    await ctx.send("我已經在語音頻道了呦, 目前狀態為閒置狀態")
+                else:
+                    try:
+                        _ = YouTube(url)
+                        self.play_queue.append(url)
+                    except:
+                        await ctx.send("找不到歌曲!")
+        else:
+            await ctx.send("找不到歌曲!")
+
+    @commands.command()
     async def playlist(self, ctx, url):
-        if url.startswith(self.playlist_prefix):
+        if url.startswith(self.playlist_prefix[0]) or url.startswith(self.playlist_prefix[1]):
             if ctx.author.voice == None:
                 await ctx.send('使用者還沒進入語音頻道呦')
             elif self.bot.voice_clients == []:
@@ -130,9 +175,12 @@ class YoutubePlay(commands.Cog):
 
     def after_song(self, ctx):
         self.play_queue.pop(0)
-        for file in os.scandir(self.song_path):
-            if file.path[-4:] == ".mp3":
-                os.remove(file.path)
+        try:
+            for file in os.scandir(self.song_path):
+                if file.path[-4:] == ".mp3":
+                    os.remove(file.path)
+        except:
+            pass
         if self.play_queue != []:
             music = YouTube(self.play_queue[0])
             title = music.title
