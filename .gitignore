@@ -2,3 +2,4 @@
 /.env
 /test/
 /cogs/__pycache__/
+/music_tmp/

@@ -29,6 +29,7 @@ async def ping(ctx):
 
 @bot.command()
 async def exit(ctx):
+    await ctx.send(f'正在關閉機器人...')
     await bot.close()
 
 async def main():
