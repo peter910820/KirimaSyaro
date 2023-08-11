@@ -12,4 +12,6 @@ ADD . /app
 RUN pip3 install --requirement /app/requirements.txt
 RUN pip3 install -U pytube
 
+EXPOSE 5000/tcp
+
 CMD ["python", "./main.py"]
