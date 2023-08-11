@@ -9,8 +9,8 @@ class YoutubePlay(commands.Cog):
         self.forbidden_char = ['/','\\',':','*','?','"','<','>',"|"]
         self.play_queue = []
         self.title_queue = []
-        self.ffmpeg_path = 'C:/ffmpeg/bin/ffmpeg.exe'
-        self.song_path = 'O:/Myproject/syaroBot/music_tmp/'
+        self.ffmpeg_path = "./ffmpeg/bin/ffmpeg.exe"
+        self.song_path = "./music_tmp/"
 
         self.play_prefix = "https://www.youtube.com/"
         self.playlist_prefix = ["https://www.youtube.com/playlist?list=", "https://youtube.com/playlist?list="]

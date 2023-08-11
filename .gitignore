@@ -1,5 +1,5 @@
-/information.txt
-/.env
-/test/
+# /information.txt
+# /.env
+# /test/
 /cogs/__pycache__/
-/music_tmp/
+# /music_tmp/

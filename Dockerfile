@@ -10,5 +10,6 @@ ADD . /app
 
 # install the requirements
 RUN pip3 install --requirement /app/requirements.txt
+RUN pip3 install -U pytube
 
 CMD ["python", "./main.py"]
