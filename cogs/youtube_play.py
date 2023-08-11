@@ -104,11 +104,7 @@ class YoutubePlay(commands.Cog):
                 await voiceChannel.connect()
                 music = discord.Activity(type=discord.ActivityType.listening, name = 'Yotube的音樂')
                 await self.bot.change_presence(activity=music, status=discord.Status.online)
-
-                for file in os.scandir(self.song_path): #刪除之前的mp3檔案
-                    if file.path[-4:] == '.mp3':
-                        os.remove(file.path)
-
+                self.clean(self) # delete all mp3 file
                 url_parse = Playlist(url)
                 print(url_parse.video_urls)
                 for p in url_parse.video_urls:
@@ -145,10 +141,7 @@ class YoutubePlay(commands.Cog):
                 await voiceChannel.connect()
                 music = discord.Activity(type=discord.ActivityType.listening, name = 'Yotube的音樂')
                 await self.bot.change_presence(activity=music, status=discord.Status.online)
-
-                for file in os.scandir(self.song_path): #刪除之前的mp3檔案
-                    if file.path[-4:] == '.mp3':
-                        os.remove(file.path)
+                self.clean(self) # delete all mp3 file
                 if not self.bot.voice_clients[0].is_playing():
                     try:
                         music = YouTube(url)
@@ -182,12 +175,7 @@ class YoutubePlay(commands.Cog):
     def after_song(self, ctx):
         self.play_queue.pop(0)
         self.title_queue.pop(0)
-        try:
-            for file in os.scandir(self.song_path):
-                if file.path[-4:] == ".mp3":
-                    os.remove(file.path)
-        except:
-            pass
+        self.clean(self)
         if self.play_queue != []:
             music = YouTube(self.play_queue[0])
             title = music.title
@@ -198,6 +186,14 @@ class YoutubePlay(commands.Cog):
                     title = title.replace(f," ")
                 music.streams.filter().get_lowest_resolution().download(filename=f"{self.song_path}/{title}.mp3")
             self.bot.voice_clients[0].play(discord.FFmpegOpusAudio(executable=self.ffmpeg_path, source=f"{self.song_path}/{title}.mp3"), after = lambda _ : self.after_song(self))
+
+    def clean(self, ctx):
+        try:
+            for file in os.scandir(self.song_path):
+                if file.path[-4:] == ".mp3":
+                    os.remove(file.path)
+        except:
+            pass
     
 class MusicOperate(commands.Cog):
     def __init__(self, bot):

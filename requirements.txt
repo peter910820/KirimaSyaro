@@ -1,0 +1,5 @@
+discord
+discord.py[voice]
+pytube
+asyncio
+python-dotenv
