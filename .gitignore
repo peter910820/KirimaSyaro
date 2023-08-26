@@ -1,5 +1,6 @@
 /information.txt
 /.env
 /test/
-/cogs/__pycache__/
+/cogs/basic_commands/__pycache__/
+/cogs/youtube_player/__pycache__/
 /music_tmp/
