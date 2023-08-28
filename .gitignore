@@ -1,6 +1,5 @@
+*.env
 /information.txt
-/.env
-/test/
 /cogs/__pycache__/
 /music_tmp/*.mp3
 /ffmpeg/
