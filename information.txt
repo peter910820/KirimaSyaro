@@ -1,2 +1,0 @@
-Base invite URL: https://discord.com/api/oauth2/authorize?client_id=1079001463633760346&permissions=2188352416576&scope=bot
-Bot token: MTA3OTAwMTQ2MzYzMzc2MDM0Ng.GimM6F.VUWfP9PjI8RXsc4CthGfdg3jjyPxasLwAs1BSM
