@@ -1,4 +1,4 @@
-*.env
+.env
 /information.txt
 /cogs/__pycache__/
 /music_tmp/*.mp3
