@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-from pytube import YouTube
-import os
 
 class GeneralOperation(commands.Cog):
     def __init__(self, bot):

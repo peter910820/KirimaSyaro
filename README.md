@@ -1,6 +1,6 @@
 # syaroBot
 
-## 更新: 已已將指令改為slash command(slash_command資料夾中的app.py主程式)。
+## 更新: 新版本已移至新機器人，此機器人將停止維護。
 
 ## 最原初為四天連假不知道要幹嘛，就隨便亂做的Discord播歌機器人。
 
