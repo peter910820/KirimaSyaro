@@ -1,6 +1,6 @@
 # syaroBot
 
-## 更新: 新版本已移至新機器人，此機器人將停止維護。
+## Notice: 新版本已移至[KafuChino](https://github.com/peter910820/KafuChino)，此機器人將停止維護。
 
 ### 使用前請先將ffmpeg解壓縮到機器人根目錄，並在根目錄設定.env token。
 
