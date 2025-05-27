@@ -1,8 +1,8 @@
-# syaroBot
+# KirimaSyaro  
 
 ## Notice: 新版本已移至[KafuChino](https://github.com/peter910820/KafuChino)，此機器人將停止維護。
 
-### 使用前請先將ffmpeg解壓縮到機器人根目錄，並在根目錄設定.env token。
+### 使用前請先將ffmpeg解壓縮到機器人根目錄，並在根目錄設定 .env。
 
 ## 最原初為四天連假不知道要幹嘛，就隨便亂做的Discord播歌機器人。
 
